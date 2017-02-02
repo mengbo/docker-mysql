@@ -1,0 +1,26 @@
+mysql:
+  image: mysql
+  container_name: mysql
+  ports:
+    - 3306:3306
+  volumes:
+    - ./datadir:/var/lib/mysql
+  environment:
+    #MYSQL_RANDOM_ROOT_PASSWORD: 1
+    MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    MYSQL_USER: "${MYSQL_USER}"
+    MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    MYSQL_DATABASE: "${MYSQL_DATABASE}"
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  container_name: phpmyadmin
+  links:
+    - mysql
+  volumes:
+    - ./sessions:/sessions
+  ports:
+    - 8081:80
+  environment:
+    #PMA_ARBITRARY: 1
+    PMA_HOST: mysql
+    restart: always
