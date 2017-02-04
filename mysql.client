@@ -2,11 +2,17 @@
 
 source .env
 
+bash() {
+	echo "Run bash in the MySQL container."
+	echo
+	docker exec -it mysql bash
+}
+
 root() {
 	echo "Connect to MySQL with root:"
 	echo
-	docker run -it --link mysql --rm mysql sh -c \
-		'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+	docker exec -it mysql mysql -hlocalhost \
+		-uroot -p"${MYSQL_ROOT_PASSWORD}"
 }
 
 user() {
@@ -18,6 +24,9 @@ user() {
 }
 
 case "$1" in
+	bash)
+		bash
+		;;
 	root)
 		root
 		;;
