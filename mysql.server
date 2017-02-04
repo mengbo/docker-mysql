@@ -1,14 +1,54 @@
-#!/bin/sh
+#!/bin/bash
 
 source .env
 
-#docker stop mysql && docker rm mysql && rm -rf ./datadir
+start() {
+	docker start mysql 2>/dev/null ||
+	docker run --name mysql \
+		-p 3306:3306 \
+		-v "${PWD}"/datadir:/var/lib/mysql \
+		-e MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		-e MYSQL_USER="${MYSQL_USER}" \
+		-e MYSQL_PASSWORD="${MYSQL_PASSWORD}" \
+		-e MYSQL_DATABASE="${MYSQL_DATABASE}" \
+		-d mysql
+	docker ps -a -q -f name=mysql --format "{{.Status}}"
+}
 
-docker run --name mysql \
-	-p 3306:3306 \
-	-v ${PWD}/datadir:/var/lib/mysql \
-	-e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
-	-e MYSQL_USER=${MYSQL_USER} \
-	-e MYSQL_PASSWORD=${MYSQL_PASSWORD} \
-	-e MYSQL_DATABASE=${MYSQL_DATABASE} \
-	-d mysql
+stop() {
+	docker stop mysql
+	docker ps -a -q -f name=mysql --format "{{.Status}}"
+}
+
+status() {
+	docker ps -a -q -f name=mysql --format "{{.Names}}\n{{.Status}}"
+}
+
+clean() {
+	echo -n "Remove the docker image and the datadir, Are you sure? [y/N]: "
+	read -r REPLY
+	if echo "$REPLY" | grep -iq "^y" ;then
+		docker stop mysql
+		docker rm mysql && rm -rf ./datadir
+	fi
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop) 
+		stop
+		;;
+	status) 
+		status
+		;;
+	clean)
+		clean
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|status|clean}"
+		exit 1
+esac
+
+
