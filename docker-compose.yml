@@ -1,26 +1,28 @@
-mysql:
-  image: mysql
-  container_name: mysql
-  ports:
-    - 3306:3306
-  volumes:
-    - ./datadir:/var/lib/mysql
-  environment:
-    #MYSQL_RANDOM_ROOT_PASSWORD: 1
-    MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-    MYSQL_USER: "${MYSQL_USER}"
-    MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-    MYSQL_DATABASE: "${MYSQL_DATABASE}"
-phpmyadmin:
-  image: phpmyadmin/phpmyadmin
-  container_name: phpmyadmin
-  links:
-    - mysql
-  volumes:
-    - ./sessions:/sessions
-  ports:
-    - 8081:80
-  environment:
-    #PMA_ARBITRARY: 1
-    PMA_HOST: mysql
-    restart: always
+version: '3'
+services:
+  mysql:
+    container_name: mysql
+    environment:
+      #MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./datadir:/var/lib/mysql
+  phpmyadmin:
+    container_name: phpmyadmin
+    environment:
+      #PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      restart: always
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql
+    ports:
+      - 8081:80
+    volumes:
+      - ./sessions:/sessions
