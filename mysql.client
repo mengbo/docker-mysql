@@ -1,3 +1,14 @@
 #!/bin/sh
 
-docker run -it --rm mysql mysql $@
+source .env
+
+#docker run -it --link mysql --rm \
+#	mysql sh -c 'exec mysql \
+#	-h"$MYSQL_PORT_3306_TCP_ADDR" \
+#	-P"$MYSQL_PORT_3306_TCP_PORT" \
+#	-uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+
+docker exec -it mysql sh -c 'mysql \
+	-hlocalhost \
+	-u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" \
+	"${MYSQL_DATABASE}"'
