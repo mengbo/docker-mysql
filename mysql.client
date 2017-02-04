@@ -2,13 +2,32 @@
 
 source .env
 
-#docker run -it --link mysql --rm \
-#	mysql sh -c 'exec mysql \
-#	-h"$MYSQL_PORT_3306_TCP_ADDR" \
-#	-P"$MYSQL_PORT_3306_TCP_PORT" \
-#	-uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+root() {
+	echo "Connect to MySQL with root:\n"
+	docker run -it --link mysql --rm \
+		mysql sh -c 'exec mysql \
+		-h"$MYSQL_PORT_3306_TCP_ADDR" \
+		-P"$MYSQL_PORT_3306_TCP_PORT" \
+		-uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+}
 
-docker exec -it mysql sh -c 'mysql \
-	-hlocalhost \
-	-u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" \
-	"${MYSQL_DATABASE}"'
+user() {
+	echo "Connect to MySQL database \"${MYSQL_DATABASE}\" with user \"${MYSQL_USER}\":\n"
+	docker exec -it mysql mysql -hlocalhost \
+		-u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" \
+		${MYSQL_DATABASE}
+}
+
+case "$1" in
+	root)
+		root
+		;;
+	user) 
+		user
+		;;
+	*)
+		user
+		exit 1
+esac
+
+
