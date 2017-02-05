@@ -1,0 +1,14 @@
+# Custom MySQL configuration example
+#
+# [mysqld]
+# max_connections = 123
+#
+# You can check using following method:
+# mysql> show variables like 'max_connections';
+# +-----------------+-------+
+# | Variable_name   | Value |
+# +-----------------+-------+
+# | max_connections | 123   |
+# +-----------------+-------+
+# 1 row in set (0.01 sec)
+#

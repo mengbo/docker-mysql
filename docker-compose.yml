@@ -12,6 +12,7 @@ services:
     ports:
       - 3306:3306
     volumes:
+      - ./config-file.cnf:/etc/mysql/conf.d/config-file.cnf
       - ./datadir:/var/lib/mysql
   phpmyadmin:
     container_name: phpmyadmin

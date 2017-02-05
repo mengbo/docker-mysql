@@ -6,6 +6,7 @@ start() {
 	docker start mysql 2>/dev/null ||
 	docker run --name mysql \
 		-p 3306:3306 \
+		-v "${PWD}"/config-file.cnf:/etc/mysql/conf.d/config-file.cnf \
 		-v "${PWD}"/datadir:/var/lib/mysql \
 		-e MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		-e MYSQL_USER="${MYSQL_USER}" \
